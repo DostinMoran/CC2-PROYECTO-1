@@ -1,13 +1,14 @@
 package Elevator;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public abstract class Elevator implements Movimientos{
 
     static int cantidadElevadores = 1;
     protected int[] tableroInterno;
     protected String direccion;
-    protected byte pisoActual, pisoDestino;
-    protected int id, tiempoEspera;
-    // protected boolean reset;
+    protected int id, tiempoEspera, pisoActual, pisoDestino;
+    protected ConcurrentLinkedQueue<Integer> cola;
 
     public Elevator(int tiempoEspera, int cantidadPisos){
         this.tiempoEspera = tiempoEspera;
@@ -16,7 +17,6 @@ public abstract class Elevator implements Movimientos{
         this.id = cantidadElevadores;
         cantidadElevadores++;
         this.tableroInterno = new int[cantidadPisos];
-        this.pisoDestino = 1;
     }
 
     public abstract void mover();
@@ -26,18 +26,26 @@ public abstract class Elevator implements Movimientos{
         return this.id;
     }
 
-    public int getPisoActual() {
+    public int getPisoActual(){
         return this.pisoActual;
     }
 
-    public String getDireccion() {
+    public String getDireccion(){
         return this.direccion;
     }
 
     public void resetElevador(){
-        this.pisoDestino = 1;
-        
+        if (pisoActual >= 1) {
+            this.direccion = "down";
+            this.pisoDestino = 1;    
+        }
     }
 
+    public void solicitud(int x){
+        this.cola.add(x);
+    }
 
+    public ConcurrentLinkedQueue<Integer> solicitudes(){
+        return this.cola;
+    }
 }

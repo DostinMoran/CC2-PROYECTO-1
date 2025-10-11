@@ -1,8 +1,8 @@
 package Elevator;
 
 public class ElevatorExpress extends Elevator {
-    public ElevatorExpress(int tiempoEspera){
-        super(tiempoEspera);
+    public ElevatorExpress(int tiempoEspera, int cantidadPisos){
+        super(tiempoEspera, cantidadPisos);
     }
 
     @Override
