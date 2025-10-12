@@ -5,22 +5,27 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public abstract class Elevator implements Movimientos{
 
     static int cantidadElevadores = 1;
-    protected int[] tableroInterno;
+    protected boolean[] tableroInterno;
     protected String direccion;
-    protected int id, tiempoEspera, pisoActual, pisoDestino;
+    protected int id, tiempoEspera, duracionMovimiento, pisoActual, pisoDestino;
     protected ConcurrentLinkedQueue<Integer> cola;
 
-    public Elevator(int tiempoEspera, int cantidadPisos){
+    public Elevator(int tiempoEspera, int cantidadPisos, int duracionMovimiento){
         this.tiempoEspera = tiempoEspera;
+        this.duracionMovimiento = duracionMovimiento;
         this.direccion = "up";
         this.pisoActual = 1;
         this.id = cantidadElevadores;
         cantidadElevadores++;
-        this.tableroInterno = new int[cantidadPisos];
+        this.cola = new ConcurrentLinkedQueue<>();
+        this.tableroInterno = new boolean[cantidadPisos];
+        for (int i = 0; i < this.tableroInterno.length; i++) {
+            this.tableroInterno[i] = false;
+        }
     }
 
     public abstract void mover();
-    public abstract void esperandoCarga();
+    public abstract void parada();
 
     public int getId(){
         return this.id;
@@ -30,6 +35,10 @@ public abstract class Elevator implements Movimientos{
         return this.pisoActual;
     }
 
+    public int getPisoDestino(){
+        return this.pisoDestino;
+    }
+
     public String getDireccion(){
         return this.direccion;
     }
@@ -37,15 +46,27 @@ public abstract class Elevator implements Movimientos{
     public void resetElevador(){
         if (pisoActual >= 1) {
             this.direccion = "down";
-            this.pisoDestino = 1;    
+            this.pisoDestino = 1;
+            for (int i = this.pisoActual; i >= pisoDestino ; i--) {
+                this.pisoActual--;
+            }    
         }
     }
 
-    public void solicitud(int x){
-        this.cola.add(x);
+    public void agregarSolicitud(int x){
+        for (int i = 0; i < this.tableroInterno.length; i++) {
+            if (x == i+1) {
+                this.tableroInterno[i] = true;
+                this.cola.add(x);
+            }
+        }
     }
 
-    public ConcurrentLinkedQueue<Integer> solicitudes(){
+    public ConcurrentLinkedQueue<Integer> getsolicitudes(){
         return this.cola;
+    }
+
+    public boolean[] getTableroInterno(){
+        return this.tableroInterno;
     }
 }
