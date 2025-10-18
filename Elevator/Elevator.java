@@ -2,7 +2,7 @@ package Elevator;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public abstract class Elevator implements Movimientos{
+public abstract class Elevator implements Movimientos {
 
     static int cantidadElevadores = 1;
     protected boolean[] tableroInterno;
@@ -24,8 +24,41 @@ public abstract class Elevator implements Movimientos{
         }
     }
 
-    public abstract void mover();
-    public abstract void parada();
+    public void mover(int duracionMovimiento){
+        for (int i = 0; i < this.tableroInterno.length; i++) {
+            if (this.tableroInterno[i] == true) {
+                this.pisoDestino = i+1;
+                if (this.pisoActual < this.pisoDestino) {
+                    this.direccion = "up";
+                    for (int j = this.pisoActual; j < pisoDestino ; j++) {
+                        try {
+                            Thread.sleep(duracionMovimiento);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        this.pisoActual++;
+                    }    
+                } else if (this.pisoActual > this.pisoDestino) {
+                    this.direccion = "down";
+                    for (int j = this.pisoActual; j > pisoDestino ; j--) {
+                        try {
+                            Thread.sleep(duracionMovimiento);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        this.pisoActual--;
+                    }    
+                }
+            }
+        }
+    }
+    public void parada(int tiempoEspera){
+        for (int i = 0; i < this.tableroInterno.length; i++) {
+            if (this.tableroInterno[i] == true) {
+                this.tableroInterno[i] = false;
+            }
+        }
+    }
 
     public int getId(){
         return this.id;

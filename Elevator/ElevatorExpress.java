@@ -1,5 +1,3 @@
-package Elevator;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ElevatorExpress extends Elevator {
@@ -18,15 +16,18 @@ public class ElevatorExpress extends Elevator {
                 this.tableroInterno[i] = false;
             }
         }
-    }   
+    }  
+
     @Override
     public int getId(){
         return super.getId();
-    }   
+    }
+
     @Override
     public int getPisoActual(){
         return super.getPisoActual();
     }
+
     @Override
     public int getPisoDestino(){
         return super.getPisoDestino();
