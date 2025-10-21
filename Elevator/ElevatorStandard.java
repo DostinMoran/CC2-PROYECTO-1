@@ -1,51 +1,58 @@
+package Elevator;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ElevatorStandard extends Elevator {
-    
-    public ElevatorStandard(int tiempoEspera, int cantidadPisos, int duracionMovimiento ){
-        super(tiempoEspera,cantidadPisos, duracionMovimiento);
+
+    public ElevatorStandard(int tiempoEspera, int cantidadPisos, int duracionMovimiento) {
+        super(tiempoEspera, cantidadPisos, duracionMovimiento);
     }
-// Chatito me ayudo con este metodo :D, tengo que revisarlo despues.
-    
-    public void mover(int duracionMovimiento){
+    // Chatito me ayudo con este metodo :D, tengo que revisarlo despues.
+
+    public void mover(int duracionMovimiento) {
         super.mover(duracionMovimiento);
     }
 
-     
-    public void parada(int tiempoEspera){
+    public void parada(int tiempoEspera) {
         super.parada(tiempoEspera);
     }
 
-    
-    public int getId(){
+    public int getId() {
         return super.getId();
-    }   
+    }
+
     @Override
-    public int getPisoActual(){
+    public int getPisoActual() {
         return super.getPisoActual();
     }
+
     @Override
-    public int getPisoDestino(){
+    public int getPisoDestino() {
         return super.getPisoDestino();
-    }  
+    }
+
     @Override
-    public String getDireccion(){
+    public String getDireccion() {
         return super.getDireccion();
-    }   
+    }
+
     @Override
-    public void resetElevador(){
+    public void resetElevador() {
         super.resetElevador();
     }
+
     @Override
-    public void agregarSolicitud(int x){
+    public void agregarSolicitud(int x) {
         super.agregarSolicitud(x);
     }
+
     @Override
-    public ConcurrentLinkedQueue<Integer> getsolicitudes(){
+    public ConcurrentLinkedQueue<Integer> getsolicitudes() {
         return super.getsolicitudes();
     }
+
     @Override
-    public boolean[] getTableroInterno(){
+    public boolean[] getTableroInterno() {
         return super.getTableroInterno();
     }
 
