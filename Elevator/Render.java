@@ -8,4 +8,5 @@ public class Render extends JFrame {
         setBounds(200, 100, 800, 600);
         setResizable(false);
     }
+    //TODO: Pendiente de reflejar de forma grafica Movimientos.
 }

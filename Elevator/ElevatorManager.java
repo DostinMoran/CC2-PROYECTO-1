@@ -19,7 +19,8 @@ public class ElevatorManager {
         Scanner textC = new Scanner(System.in);
         str("Favor decida cuantos elevadores tendra el edificio");
         int nElevadores = Integer.parseInt(textL.readLine());
-        
+        //TODO: Pendiente crear instanciaciones de cantidad de elevadores.
+
         Render render = new Render();
         render.setVisible(true);
         render.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
