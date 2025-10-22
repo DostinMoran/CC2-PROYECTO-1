@@ -3,7 +3,7 @@ package Elevator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class Elevator implements Movimientos {
-
+    // TODO: Preguntar por cambios de eliminacion de ABSTRACT, implementar interfaz de Runnable de Threads
     static int cantidadElevadores = 1;
     protected boolean[] tableroInterno;
     protected String direccion;
