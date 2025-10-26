@@ -1,13 +1,12 @@
 package Elevator;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-public abstract class Elevator implements Movimientos {
-    // TODO: Preguntar por cambios de eliminacion de ABSTRACT, implementar interfaz de Runnable de Threads
+public class Elevator implements Movimientos, Runnable {
     static int cantidadElevadores = 1;
     protected boolean[] tableroInterno;
     protected String direccion;
     protected int id, tiempoEspera, duracionMovimiento, pisoActual, pisoDestino;
+    protected boolean detenerElevadores;
     protected ConcurrentLinkedQueue<Integer> cola;
 
     public Elevator(int tiempoEspera, int cantidadPisos, int duracionMovimiento){
@@ -22,6 +21,7 @@ public abstract class Elevator implements Movimientos {
         for (int i = 0; i < this.tableroInterno.length; i++) {
             this.tableroInterno[i] = false;
         }
+        this.detenerElevadores = false;
     }
 
     public void mover(int duracionMovimiento){
@@ -99,7 +99,18 @@ public abstract class Elevator implements Movimientos {
         return this.cola;
     }
 
-    public boolean[] getTableroInterno(){
+    public boolean[] getTableroInterno() {
         return this.tableroInterno;
+    }
+
+    public void setDetenerElevadores() {
+        this.detenerElevadores = true;
+    }
+
+    @Override
+    public void run() {
+        while (!this.detenerElevadores) {
+            //TODO: Crear Logica de programacion
+        }
     }
 }

@@ -1,39 +1,28 @@
 package Elevator;
 import java.util.Scanner;
 import javax.swing.JFrame;
-import java.lang.Thread;
+import Elevator.components.marcoPantalla;
 
 public class ElevatorManager {
-
     public static void str(String texto) {
-        System.out.println(texto + "\n");
+        System.out.println(texto);
     }
-
-    public static void str(String texto, String variable) {
-        System.out.printf("%s %s\n", texto, variable);
-    }
-
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-
-        int nElevadores = 0;
-        int tiempoEspera = 0;
-        int cantidadPisos = 0;
-        int tiempoTransporte = 0;
-
+        Scanner esc = new Scanner(System.in); 
+        int nElevadores, tiempoEspera, cantidadPisos, tiempoTransporte;
         while (true) {
             try {
                 str("Favor decida cuántos elevadores tendrá el edificio:");
-                nElevadores = Integer.parseInt(in.nextLine().trim());
+                nElevadores = Integer.parseInt(esc.nextLine().trim());
 
                 str("Favor colocar el tiempo de espera de los elevadores (en milisegundos):");
-                tiempoEspera = Integer.parseInt(in.nextLine().trim());
+                tiempoEspera = Integer.parseInt(esc.nextLine().trim());
 
                 str("Favor colocar la cantidad de pisos que tendrá el edificio:");
-                cantidadPisos = Integer.parseInt(in.nextLine().trim());
+                cantidadPisos = Integer.parseInt(esc.nextLine().trim());
 
                 str("Favor colocar la duración de transporte por piso de cada elevador (ms):");
-                tiempoTransporte = Integer.parseInt(in.nextLine().trim());
+                tiempoTransporte = Integer.parseInt(esc.nextLine().trim());
 
                 if (nElevadores <= 0 || tiempoEspera <= 0 || cantidadPisos <= 0 || tiempoTransporte <= 0) {
                     str("ERROR: Todos los valores deben ser mayores a 0. Inténtalo de nuevo.\n");
@@ -44,13 +33,16 @@ public class ElevatorManager {
                 str("ERROR: NO ES UN NUMERO\n");
             }
         }
+        marcoPantalla pantallaCentrada = new marcoPantalla();
+        pantallaCentrada.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pantallaCentrada.setVisible(true);
         Elevator[] elevadores = new Elevator[nElevadores];
-        for (int i = 0; i < elevadores.length; i++) {
-            // elevadores[i] = new Elevator(tiempoEspera, cantidadPisos, tiempoTransporte); //Todo: ERROR por abstract en Elevator
+        for (int i = 0; i < nElevadores; i++) {
+            elevadores[i] = new Elevator(tiempoEspera, cantidadPisos, tiempoTransporte);
+            Thread asyncElevador = new Thread(elevadores[i]);
+            asyncElevador.start();
         }
-        Render render = new Render();
-        render.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        render.setVisible(true);
-        in.close();
+        esc.close();
+        str("Elevadores iniciados: " + nElevadores);    
     }
 }
