@@ -14,16 +14,12 @@ public class ElevatorManager {
             try {
                 str("Favor decida cuántos elevadores tendrá el edificio:");
                 nElevadores = Integer.parseInt(esc.nextLine().trim());
-
                 str("Favor colocar el tiempo de espera de los elevadores (en milisegundos):");
                 tiempoEspera = Integer.parseInt(esc.nextLine().trim());
-
                 str("Favor colocar la cantidad de pisos que tendrá el edificio:");
                 cantidadPisos = Integer.parseInt(esc.nextLine().trim());
-
                 str("Favor colocar la duración de transporte por piso de cada elevador (ms):");
                 tiempoTransporte = Integer.parseInt(esc.nextLine().trim());
-
                 if (nElevadores <= 0 || tiempoEspera <= 0 || cantidadPisos <= 0 || tiempoTransporte <= 0) {
                     str("ERROR: Todos los valores deben ser mayores a 0. Inténtalo de nuevo.\n");
                     continue;
