@@ -23,7 +23,7 @@ public class SolicitudElevador {
     }
     @Override
     public String toString() {
-        return "SolicitudElevador [piso=" + piso + ", direccion=" + direccion + "]";
+        return "Solicitud de Elevador en el [piso= " + piso + " y direccion= " + direccion + "]";
     }
 }
 

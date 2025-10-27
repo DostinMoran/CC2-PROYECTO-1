@@ -1,4 +1,5 @@
 package Elevator;
+
 import java.util.Scanner;
 import javax.swing.JFrame;
 import Elevator.components.MarcoPantalla;
@@ -7,8 +8,9 @@ public class ElevatorManager {
     public static void str(String texto) {
         System.out.println(texto);
     }
+
     public static void main(String[] args) {
-        Scanner esc = new Scanner(System.in); 
+        Scanner esc = new Scanner(System.in);
         int nElevadores, tiempoEspera, cantidadPisos, tiempoTransporte;
         while (true) {
             try {
@@ -29,19 +31,25 @@ public class ElevatorManager {
                 str("ERROR: NO ES UN NUMERO\n");
             }
         }
+
         MarcoPantalla pantallaCentrada = new MarcoPantalla();
         pantallaCentrada.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pantallaCentrada.setVisible(true);
         Elevator[] elevadores = new Elevator[nElevadores];
-        ManejoElevadores manejador = new ManejoElevadores(elevadores);
-        manejador.solicitarElevador(4, Direccion.UP);
-        str(manejador.toString());
         for (int i = 0; i < nElevadores; i++) {
             elevadores[i] = new Elevator(tiempoEspera, cantidadPisos, tiempoTransporte);
-            Thread asyncElevador = new Thread(elevadores[i]);
+            Thread asyncElevador = new Thread(elevadores[i], "Elevador-" + (i + 1));
             asyncElevador.start();
         }
+        ManejoElevadores manejador = new ManejoElevadores(elevadores);
+        Thread hiloManejador = new Thread(manejador, "ManejadorElevadores");
+        hiloManejador.start();
+
+        manejador.solicitarElevador(3, Direccion.UP);
+        manejador.solicitarElevador(5, Direccion.DOWN);
+        manejador.solicitarElevador(2, Direccion.UP);
+
         esc.close();
-        str("Elevadores iniciados: " + nElevadores);    
+        str("Elevadores iniciados: " + nElevadores);
     }
 }

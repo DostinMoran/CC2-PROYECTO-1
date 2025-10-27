@@ -4,15 +4,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Elevator implements Movimientos, Runnable {
     static int cantidadElevadores = 1;
     protected boolean[] tableroInterno;
-    protected String direccion;
     protected int id, tiempoEspera, duracionMovimiento, pisoActual, pisoDestino;
     protected boolean detenerElevadores;
     protected ConcurrentLinkedQueue<Integer> cola;
+    protected Direccion direccion;
 
     public Elevator(int tiempoEspera, int cantidadPisos, int duracionMovimiento){
         this.tiempoEspera = tiempoEspera;
+        this.direccion = Direccion.UP;
         this.duracionMovimiento = duracionMovimiento;
-        this.direccion = "up";
         this.pisoActual = 1;
         this.id = cantidadElevadores;
         cantidadElevadores++;
@@ -29,7 +29,7 @@ public class Elevator implements Movimientos, Runnable {
             if (this.tableroInterno[i] == true) {
                 this.pisoDestino = i+1;
                 if (this.pisoActual < this.pisoDestino) {
-                    this.direccion = "up";
+                    this.direccion = Direccion.UP;
                     for (int j = this.pisoActual; j < pisoDestino ; j++) {
                         try {
                             Thread.sleep(duracionMovimiento);
@@ -39,7 +39,7 @@ public class Elevator implements Movimientos, Runnable {
                         this.pisoActual++;
                     }    
                 } else if (this.pisoActual > this.pisoDestino) {
-                    this.direccion = "down";
+                    this.direccion = Direccion.DOWN;
                     for (int j = this.pisoActual; j > pisoDestino ; j--) {
                         try {
                             Thread.sleep(duracionMovimiento);
@@ -72,13 +72,13 @@ public class Elevator implements Movimientos, Runnable {
         return this.pisoDestino;
     }
 
-    public String getDireccion(){
+    public Direccion getDireccion(){
         return this.direccion;
     }
 
     public void resetElevador(){
         if (pisoActual >= 1) {
-            this.direccion = "down";
+            this.direccion = Direccion.DOWN;
             this.pisoDestino = 1;
             for (int i = this.pisoActual; i >= pisoDestino ; i--) {
                 this.pisoActual--;

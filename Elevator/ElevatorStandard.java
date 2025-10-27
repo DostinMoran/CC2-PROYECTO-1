@@ -32,7 +32,7 @@ public class ElevatorStandard extends Elevator {
     }
 
     @Override
-    public String getDireccion() {
+    public Direccion getDireccion() {
         return super.getDireccion();
     }
 
