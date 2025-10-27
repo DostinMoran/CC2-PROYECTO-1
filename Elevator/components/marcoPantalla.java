@@ -11,7 +11,7 @@ public class MarcoPantalla extends JFrame {
         int largoPantalla = tamanoPantalla.height; // Extraemos en largo de mi pantalla
         setSize(anchoPantalla / 2, largoPantalla / 2); // Tamaño de la pantalla
         setLocation(anchoPantalla / 4, largoPantalla / 4); // Centrar la pantalla
-        setTitle("CC2 - Proyecto #2 - Elevator Manager");
+        setTitle("Proyecto #2 - Elevator Manager");
         Image icono = miPantalla.getImage("./img/logoUGalileo.png");
         setIconImage(icono);
         PantallaPresentacion hoja1 = new PantallaPresentacion();
