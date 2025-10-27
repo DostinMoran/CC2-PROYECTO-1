@@ -1,7 +1,7 @@
 package Elevator;
 import java.util.Scanner;
 import javax.swing.JFrame;
-import Elevator.components.marcoPantalla;
+import Elevator.components.MarcoPantalla;
 
 public class ElevatorManager {
     public static void str(String texto) {
@@ -29,10 +29,13 @@ public class ElevatorManager {
                 str("ERROR: NO ES UN NUMERO\n");
             }
         }
-        marcoPantalla pantallaCentrada = new marcoPantalla();
+        MarcoPantalla pantallaCentrada = new MarcoPantalla();
         pantallaCentrada.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pantallaCentrada.setVisible(true);
         Elevator[] elevadores = new Elevator[nElevadores];
+        ManejoElevadores manejador = new ManejoElevadores(elevadores);
+        manejador.solicitarElevador(4, Direccion.UP);
+        str(manejador.toString());
         for (int i = 0; i < nElevadores; i++) {
             elevadores[i] = new Elevator(tiempoEspera, cantidadPisos, tiempoTransporte);
             Thread asyncElevador = new Thread(elevadores[i]);

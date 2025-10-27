@@ -110,7 +110,7 @@ public class Elevator implements Movimientos, Runnable {
     @Override
     public void run() {
         while (!this.detenerElevadores) {
-            //TODO: Crear Logica de programacion
+            
         }
     }
 }
