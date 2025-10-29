@@ -5,7 +5,6 @@ public abstract class Elevator implements Movimientos, Runnable {
     static int cantidadElevadores = 1;
     protected boolean[] tableroInterno;
     protected int id, tiempoEspera, duracionMovimiento, pisoActual, pisoDestino;
-    protected boolean detenerElevadores;
     protected ConcurrentLinkedQueue<Integer> cola;
     protected Direccion direccion;
 
@@ -22,7 +21,6 @@ public abstract class Elevator implements Movimientos, Runnable {
         for (int i = 0; i < this.tableroInterno.length; i++) {
             this.tableroInterno[i] = false;
         }
-        this.detenerElevadores = false;
     }
 
     public void mover(int duracionMovimiento){
