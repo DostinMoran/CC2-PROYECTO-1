@@ -7,7 +7,6 @@ public class ElevatorStandard extends Elevator {
     public ElevatorStandard(int tiempoEspera, int cantidadPisos, int duracionMovimiento) {
         super(tiempoEspera, cantidadPisos, duracionMovimiento);
     }
-    // Chatito me ayudo con este metodo :D, tengo que revisarlo despues.
 
     public void mover(int duracionMovimiento) {
         super.mover(duracionMovimiento);
