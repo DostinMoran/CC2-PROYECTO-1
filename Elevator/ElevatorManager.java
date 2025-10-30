@@ -16,12 +16,12 @@ public class ElevatorManager {
             try {
                 str("Favor decida cuántos elevadores tendrá el edificio:");
                 nElevadores = Integer.parseInt(esc.nextLine().trim());
-                str("Favor colocar el tiempo de espera de los elevadores (en milisegundos):");
-                tiempoEspera = Integer.parseInt(esc.nextLine().trim());
+                str("Favor colocar el tiempo de espera de los elevadores (en Segundos):");
+                tiempoEspera = (Integer.parseInt(esc.nextLine().trim()) * 1000);
                 str("Favor colocar la cantidad de pisos que tendrá el edificio:");
                 cantidadPisos = Integer.parseInt(esc.nextLine().trim());
-                str("Favor colocar la duración de transporte por piso de cada elevador (ms):");
-                tiempoTransporte = Integer.parseInt(esc.nextLine().trim());
+                str("Favor colocar la duración de transporte por piso de cada elevador (en Segundos):");
+                tiempoTransporte = (Integer.parseInt(esc.nextLine().trim()) * 1000);
                 if (nElevadores <= 0 || tiempoEspera <= 0 || cantidadPisos <= 0 || tiempoTransporte <= 0) {
                     str("ERROR: Todos los valores deben ser mayores a 0. Inténtalo de nuevo.\n");
                     continue;
@@ -31,7 +31,6 @@ public class ElevatorManager {
                 str("ERROR: NO ES UN NUMERO\n");
             }
         }
-
         MarcoPantalla pantallaCentrada = new MarcoPantalla();
         pantallaCentrada.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pantallaCentrada.setVisible(true);
@@ -44,10 +43,6 @@ public class ElevatorManager {
         ManejoElevadores manejador = new ManejoElevadores(elevadores);
         Thread hiloManejador = new Thread(manejador, "ManejadorElevadores");
         hiloManejador.start();
-
-        manejador.solicitarElevador(3, Direccion.UP);
-        manejador.solicitarElevador(5, Direccion.DOWN);
-        manejador.solicitarElevador(2, Direccion.UP);
 
         esc.close();
         str("Elevadores iniciados: " + nElevadores);

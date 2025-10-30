@@ -18,20 +18,18 @@ public class Elevator implements Movimientos, Runnable {
         this.direccion = Direccion.UP;
         this.duracionMovimiento = duracionMovimiento;
         this.pisoActual = 1;
-        this.id = cantidadElevadores;
-        cantidadElevadores++;
+        this.id = cantidadElevadores++;
         this.cola = new ConcurrentLinkedQueue<>();
         this.tableroInterno = new boolean[cantidadPisos];
-        for (int i = 0; i < this.tableroInterno.length; i++) {
+        for (int i = 0; i < this.tableroInterno.length; i++)
             this.tableroInterno[i] = false;
-        }
         this.detenerElevadores = false;
         this.mLogger = ElevatorLogger.cache(this.id);
     }
 
     public void mover(int duracionMovimiento) {
         for (int i = 0; i < this.tableroInterno.length; i++) {
-            if (this.tableroInterno[i] == true) {
+            if (this.tableroInterno[i]) {
                 this.pisoDestino = i + 1;
                 if (this.pisoActual < this.pisoDestino) {
                     this.direccion = Direccion.UP;
@@ -39,7 +37,7 @@ public class Elevator implements Movimientos, Runnable {
                         try {
                             Thread.sleep(duracionMovimiento);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
                         }
                         this.pisoActual++;
                     }
@@ -49,7 +47,7 @@ public class Elevator implements Movimientos, Runnable {
                         try {
                             Thread.sleep(duracionMovimiento);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
                         }
                         this.pisoActual--;
                     }
@@ -59,11 +57,15 @@ public class Elevator implements Movimientos, Runnable {
     }
 
     public void parada(int tiempoEspera) {
-        for (int i = 0; i < this.tableroInterno.length; i++) {
-            if (this.tableroInterno[i] == true) {
-                this.tableroInterno[i] = false;
-            }
+        try {
+            Thread.sleep(tiempoEspera);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
+        if (pisoActual >= 1 && pisoActual <= tableroInterno.length)
+            this.tableroInterno[pisoActual - 1] = false;
+        if (mLogger != null)
+            mLogger.info("Elevador #" + this.id + " se detuvo en el piso " + this.pisoActual);
     }
 
     public int getId() {
@@ -83,21 +85,18 @@ public class Elevator implements Movimientos, Runnable {
     }
 
     public void resetElevador() {
-        if (pisoActual >= 1) {
-            this.direccion = Direccion.DOWN;
-            this.pisoDestino = 1;
-            for (int i = this.pisoActual; i >= pisoDestino; i--) {
-                this.pisoActual--;
-            }
-        }
+        this.direccion = Direccion.DOWN;
+        this.pisoDestino = 1;
+        for (int i = this.pisoActual; i > pisoDestino; i--)
+            this.pisoActual--;
+        this.pisoActual = 1;
+        mLogger.info("Elevador #" + this.id + " fue reseteado al piso 1");
     }
 
     public void agregarSolicitud(int x) {
-        for (int i = 0; i < this.tableroInterno.length; i++) {
-            if (x == i + 1) {
-                this.tableroInterno[i] = true;
-                this.cola.add(x);
-            }
+        if (x >= 1 && x <= tableroInterno.length) {
+            this.tableroInterno[x - 1] = true;
+            this.cola.add(x);
         }
     }
 
@@ -113,10 +112,95 @@ public class Elevator implements Movimientos, Runnable {
         this.detenerElevadores = true;
     }
 
+    private boolean hayParadasPendientes() {
+        for (boolean parada : this.tableroInterno)
+            if (parada)
+                return true;
+        return false;
+    }
+
+    private boolean paradasArriba() {
+        for (int i = this.pisoActual; i < this.tableroInterno.length; i++)
+            if (this.tableroInterno[i])
+                return true;
+        return false;
+    }
+
+    private boolean paradasAbajo() {
+        for (int i = pisoActual - 2; i >= 0; i--)
+            if (this.tableroInterno[i])
+                return true;
+        return false;
+    }
+
+    private void cambiarDireccion(Direccion nuevaDireccion) {
+        if (this.direccion != nuevaDireccion) {
+            this.direccion = nuevaDireccion;
+            if (mLogger != null)
+                mLogger.info("Elevador #" + this.id + " cambió dirección a " + this.direccion);
+        }
+    }
+
+    private void moverUnPiso(Direccion direccion) {
+        int destino = (direccion == Direccion.UP) ? this.pisoActual + 1 : this.pisoActual - 1;
+        try {
+            Thread.sleep(duracionMovimiento);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        pisoActual = destino;
+        if (mLogger != null)
+            mLogger.info("Elevador #" + this.id + " se movió al piso " + this.pisoActual);
+    }
+
     @Override
     public void run() {
         while (!this.detenerElevadores) {
+            Integer p;
+            while ((p = cola.poll()) != null) {
+                if (p >= 1 && p <= tableroInterno.length) {
+                    this.tableroInterno[p - 1] = true;
+                    if (mLogger != null)
+                        mLogger.info("Elevador #" + this.id + " marcó piso " + p + " (Solicitud)");
+                }
+            }
 
+            if (!hayParadasPendientes()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                continue;
+            }
+
+            if (direccion == Direccion.UP) {
+                if (paradasArriba()) {
+                    while (paradasArriba()) {
+                        moverUnPiso(Direccion.UP);
+                        if (tableroInterno[pisoActual - 1])
+                            parada(tiempoEspera);
+                    }
+                    if (paradasAbajo())
+                        cambiarDireccion(Direccion.DOWN);
+                } else if (paradasAbajo()) {
+                    cambiarDireccion(Direccion.DOWN);
+                }
+            } else {
+                if (paradasAbajo()) {
+                    while (paradasAbajo()) {
+                        moverUnPiso(Direccion.DOWN);
+                        if (tableroInterno[pisoActual - 1])
+                            parada(tiempoEspera);
+                    }
+                    if (paradasArriba())
+                        cambiarDireccion(Direccion.UP);
+                } else if (paradasArriba()) {
+                    cambiarDireccion(Direccion.UP);
+                }
+            }
         }
+        if (mLogger != null)
+            mLogger.info("Elevador #" + this.id + " ha terminado el ciclo");
     }
 }
