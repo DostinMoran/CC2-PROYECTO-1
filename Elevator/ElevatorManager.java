@@ -51,6 +51,16 @@ public class ElevatorManager {
         Thread hiloManejador = new Thread(manejador, "ManejadorElevadores");
         hiloManejador.start();
 
+        manejador.solicitarElevador(5, Direccion.UP);
+        manejador.solicitarElevador(7, Direccion.UP);
+        manejador.solicitarElevador(8, Direccion.UP);
+        manejador.solicitarElevador(13, Direccion.UP);
+        manejador.solicitarElevador(1, Direccion.DOWN);
+        manejador.solicitarElevador(5, Direccion.UP);
+        manejador.solicitarElevador(2, Direccion.UP);
+        manejador.solicitarElevador(1, Direccion.UP);
+        manejador.solicitarElevador(18, Direccion.DOWN);
+
         esc.close();
         str("Elevadores iniciados: " + nElevadores);
     }
