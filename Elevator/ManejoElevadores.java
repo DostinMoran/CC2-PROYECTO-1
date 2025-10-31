@@ -3,7 +3,7 @@ package Elevator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ManejoElevadores implements Runnable {
-    private final ConcurrentLinkedQueue<SolicitudElevador> solicitudes = new ConcurrentLinkedQueue<SolicitudElevador>();
+    private final ConcurrentLinkedQueue<SolicitudElevador> solicitudes = new ConcurrentLinkedQueue<>();
     private final Elevator[] elevadores;
     private volatile boolean enEjecucion = true;
 
@@ -23,35 +23,44 @@ public class ManejoElevadores implements Runnable {
     @Override
     public void run() {
         while (enEjecucion) {
-            if (!solicitudes.isEmpty()) {
-                SolicitudElevador solicitud = solicitudes.poll();
-                if (solicitud != null) {
-                    Elevator elevadorCercano = null;
-                    int distanciaMinima = Integer.MAX_VALUE;
-                    for (Elevator elevador : elevadores) {
-                        int distanciaElevadores = Math.abs(elevador.getPisoActual() - solicitud.getPiso());
-                        if (distanciaElevadores < distanciaMinima) {
-                            distanciaMinima = distanciaElevadores;
-                            elevadorCercano = elevador;
-                        }
-                    }
-                    if (elevadorCercano != null) {
-                        elevadorCercano.agregarSolicitud(solicitud.getPiso());
-                        System.out.println("Asignado " + solicitud +
-                                " al elevador #" + elevadorCercano.getId() +
-                                " (distancia=" + distanciaMinima + ")");
-                    }
+            SolicitudElevador solicitud = solicitudes.poll();
+
+            if (solicitud != null) {
+                Elevator elegido = elegirElevador(solicitud.getPiso(), solicitud.getDireccion());
+
+                if (elegido != null) {
+                    elegido.agregarSolicitud(solicitud.getPiso());
+                    System.out.println("Asignado " + solicitud +
+                            " al elevador #" + elegido.getId() +
+                            " (piso actual: " + elegido.getPisoActual() + ")");
+                } else {
+                    solicitudes.offer(solicitud);
                 }
             } else {
                 try {
-                    Thread.sleep(30);
-                } catch (InterruptedException ie) {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
         }
     }
-    
+
+    private Elevator elegirElevador(int piso, Direccion direccion) {
+        Elevator mejorElevador = null;
+        int menorDistancia = Integer.MAX_VALUE;
+
+        for (Elevator e : elevadores) {
+            int distancia = Math.abs(e.getPisoActual() - piso);
+            if (distancia < menorDistancia) {
+                menorDistancia = distancia;
+                mejorElevador = e;
+            }
+        }
+
+        return mejorElevador;
+    }
+
     public void detener() {
         enEjecucion = false;
     }
