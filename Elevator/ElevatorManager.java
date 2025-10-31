@@ -12,18 +12,19 @@ public class ElevatorManager {
     public static void main(String[] args) {
         
         Scanner esc = new Scanner(System.in);
-        int nElevadores, tiempoEspera, cantidadPisos, tiempoTransporte;
+        double tiempoEspera, tiempoTransporte;
+        int nElevadores, cantidadPisos;
 
         while (true) {
             try {
                 str("Ingrese el número de elevadores tendrá el edificio:");
                 nElevadores = Integer.parseInt(esc.nextLine().trim());
-                str("Ingrese el tiempo de espera de los elevadores (en milisegundos):");
-                tiempoEspera = Integer.parseInt(esc.nextLine().trim());
+                str("Ingrese el tiempo de espera de los elevadores (en Segundos):");
+                tiempoEspera = Double.parseDouble(esc.nextLine().trim());
                 str("Ingrese la cantidad de pisos que tendrá el edificio:");
                 cantidadPisos = Integer.parseInt(esc.nextLine().trim());
-                str("Ingrese la duración de transporte por piso de cada elevador (ms):");
-                tiempoTransporte = Integer.parseInt(esc.nextLine().trim());
+                str("Ingrese la duración de transporte por piso de cada elevador (Segundos):");
+                tiempoTransporte = Double.parseDouble(esc.nextLine().trim());
                 if (nElevadores <= 0 || tiempoEspera <= 0 || cantidadPisos <= 0 || tiempoTransporte <= 0) {
                     str("ERROR: Todos los valores deben ser mayores a 0. Inténtalo de nuevo.\n");
                     continue;

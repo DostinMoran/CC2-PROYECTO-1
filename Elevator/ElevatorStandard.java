@@ -4,15 +4,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ElevatorStandard extends Elevator {
 
-    public ElevatorStandard(int tiempoEspera, int cantidadPisos, int duracionMovimiento) {
+    public ElevatorStandard(double tiempoEspera, int cantidadPisos, double duracionMovimiento) {
         super(tiempoEspera, cantidadPisos, duracionMovimiento);
     }
 
-    public void mover(int duracionMovimiento) {
+    public void mover(double duracionMovimiento) {
         super.mover(duracionMovimiento);
     }
 
-    public void parada(int tiempoEspera) {
+    public void parada(double tiempoEspera) {
         super.parada(tiempoEspera);
     }
 

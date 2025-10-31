@@ -3,19 +3,19 @@ package Elevator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ElevatorExpress extends Elevator {
-    public ElevatorExpress(int tiempoEspera, int cantidadPisos, int duracionMovimiento) {
+    public ElevatorExpress(double tiempoEspera, int cantidadPisos, double duracionMovimiento) {
         super(tiempoEspera, cantidadPisos, duracionMovimiento);
     }
 
     // Debido a que la funcionamiento del elevador express es diferente al estandar,
     // tengo pendiente revisar este metodo.
     @Override
-    public void mover(int duracionMovimiento) {
+    public void mover(double duracionMovimiento) {
 
     }
 
     @Override
-    public void parada(int tiempoEspera) {
+    public void parada(double tiempoEspera) {
         for (int i = 0; i < this.tableroInterno.length; i++) {
             if (this.tableroInterno[i] == true) {
                 this.tableroInterno[i] = false;

@@ -8,12 +8,13 @@ public class Elevator implements Movimientos, Runnable {
     static int cantidadElevadores = 1;
     protected boolean[] tableroInterno;
     private final Logger mLogger;
-    protected int id, tiempoEspera, duracionMovimiento, pisoActual, pisoDestino;
+    protected int id, pisoActual, pisoDestino;
+    protected double tiempoEspera, duracionMovimiento;
     protected boolean detenerElevadores;
     protected ConcurrentLinkedQueue<Integer> cola;
     protected Direccion direccion;
 
-    public Elevator(int tiempoEspera, int cantidadPisos, int duracionMovimiento) {
+    public Elevator(double tiempoEspera, int cantidadPisos, double duracionMovimiento) {
         this.tiempoEspera = tiempoEspera;
         this.direccion = Direccion.UP;
         this.duracionMovimiento = duracionMovimiento;
@@ -27,7 +28,7 @@ public class Elevator implements Movimientos, Runnable {
         this.mLogger = ElevatorLogger.cache(this.id);
     }
 
-    public void mover(int duracionMovimiento) {
+    public void mover(double duracionMovimiento) {
         for (int i = 0; i < this.tableroInterno.length; i++) {
             if (this.tableroInterno[i]) {
                 this.pisoDestino = i + 1;
@@ -35,7 +36,7 @@ public class Elevator implements Movimientos, Runnable {
                     this.direccion = Direccion.UP;
                     for (int j = this.pisoActual; j < pisoDestino; j++) {
                         try {
-                            Thread.sleep(duracionMovimiento);
+                            Thread.sleep((long) (duracionMovimiento * 1000));
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
@@ -45,7 +46,7 @@ public class Elevator implements Movimientos, Runnable {
                     this.direccion = Direccion.DOWN;
                     for (int j = this.pisoActual; j > pisoDestino; j--) {
                         try {
-                            Thread.sleep(duracionMovimiento);
+                            Thread.sleep((long) (duracionMovimiento * 1000));
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
@@ -56,9 +57,9 @@ public class Elevator implements Movimientos, Runnable {
         }
     }
 
-    public void parada(int tiempoEspera) {
+    public void parada(double tiempoEspera) {
         try {
-            Thread.sleep(tiempoEspera);
+            Thread.sleep((long) (tiempoEspera * 1000));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -144,7 +145,7 @@ public class Elevator implements Movimientos, Runnable {
     private void moverUnPiso(Direccion direccion) {
         int destino = (direccion == Direccion.UP) ? this.pisoActual + 1 : this.pisoActual - 1;
         try {
-            Thread.sleep(duracionMovimiento);
+            Thread.sleep((long) (duracionMovimiento * 1000));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }

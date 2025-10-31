@@ -14,12 +14,10 @@ public class ManejoElevadores implements Runnable {
     public void solicitarElevador(int piso, Direccion direccion) {
         solicitudes.offer(new SolicitudElevador(piso, direccion));
     }
-
     @Override
     public String toString() {
         return "Solicitudes en cola: " + solicitudes.size();
     }
-
     @Override
     public void run() {
         while (enEjecucion) {
