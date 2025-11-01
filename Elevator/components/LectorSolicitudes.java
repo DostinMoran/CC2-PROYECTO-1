@@ -11,9 +11,8 @@ import Elevator.SolicitudElevador;
 public final class LectorSolicitudes {
 
     private LectorSolicitudes() {
-    
     }
-
+    
     public static List<SolicitudElevador> cargar(String ruta) throws IOException {
         List<SolicitudElevador> lista = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(ruta))) {

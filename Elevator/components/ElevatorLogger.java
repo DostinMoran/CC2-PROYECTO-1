@@ -1,16 +1,10 @@
 package Elevator.components;
-
 import java.util.logging.*;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
-
-
 public final class ElevatorLogger {
-    
     private ElevatorLogger() {
-
     }
-
     public static Logger cache(int id) {
         Logger logger = Logger.getLogger("Elevador-" + id);
         logger.setUseParentHandlers(true);
