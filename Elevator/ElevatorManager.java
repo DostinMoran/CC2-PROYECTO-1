@@ -1,7 +1,11 @@
 package Elevator;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 import javax.swing.JFrame;
+
+import Elevator.components.LectorSolicitudes;
 import Elevator.components.MarcoPantalla;
 
 public class ElevatorManager {
@@ -10,7 +14,7 @@ public class ElevatorManager {
     }
 
     public static void main(String[] args) {
-        
+
         Scanner esc = new Scanner(System.in);
         double tiempoEspera, tiempoTransporte;
         int nElevadores, cantidadPisos;
@@ -35,14 +39,13 @@ public class ElevatorManager {
             }
         }
 
-        /* ------------------------ Implementación Interfaz gráfica ------------------------ */
+        /* ------------------------ Interfaz gráfica ------------------------ */
         MarcoPantalla pantallaCentrada = new MarcoPantalla();
         pantallaCentrada.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pantallaCentrada.setVisible(true);
-        /* --------------------------------------------------------------------------------- */
+        /* ------------------------------------------------------------------- */
 
         ElevatorStandard[] elevadores = new ElevatorStandard[nElevadores];
-
         for (int i = 0; i < nElevadores; i++) {
             elevadores[i] = new ElevatorStandard(tiempoEspera, cantidadPisos, tiempoTransporte);
             Thread asyncElevador = new Thread(elevadores[i], "Elevador-" + (i + 1));
@@ -51,16 +54,22 @@ public class ElevatorManager {
         ManejoElevadores manejador = new ManejoElevadores(elevadores);
         Thread hiloManejador = new Thread(manejador, "ManejadorElevadores");
         hiloManejador.start();
-
+        try {
+            List<SolicitudElevador> reqs = LectorSolicitudes.cargar("solicitudes.txt");
+            for (SolicitudElevador s : reqs) {
+                manejador.solicitarElevador(s.getPiso(), s.getDireccion());
+            }
+            System.out.println("Archivo de solicitudes cargado correctamente.");
+        } catch (IOException e) {
+            System.out.println("No se pudo leer el archivo de solicitudes: " + e.getMessage());
+        }
         manejador.solicitarElevador(5, Direccion.UP);
+        manejador.solicitarElevador(3, Direccion.UP);
+        manejador.solicitarElevador(2, Direccion.DOWN);
         manejador.solicitarElevador(7, Direccion.UP);
         manejador.solicitarElevador(8, Direccion.UP);
-        manejador.solicitarElevador(13, Direccion.UP);
-        manejador.solicitarElevador(1, Direccion.DOWN);
         manejador.solicitarElevador(5, Direccion.UP);
-        manejador.solicitarElevador(2, Direccion.UP);
-        manejador.solicitarElevador(1, Direccion.UP);
-        manejador.solicitarElevador(18, Direccion.DOWN);
+        manejador.solicitarElevador(1, Direccion.DOWN);
 
         esc.close();
         str("Elevadores iniciados: " + nElevadores);
