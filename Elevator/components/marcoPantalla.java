@@ -3,24 +3,24 @@ package Elevator.components;
 import javax.swing.*;
 import java.awt.*;
 
+import Elevator.*;
+
 public class MarcoPantalla extends JFrame {
 
     private JButton btnInicio, btnParar, btnReset, btnAgregarSolicitud;
     private JTextArea logArea;
 
+    private ManejoElevadores manejador;
+    private ElevatorStandard[] elevadores;
+
     public MarcoPantalla() {
-        super("Elevator Manager");
+        super("Proyecto #1 - Elevator Manager");
         Toolkit miPantalla = Toolkit.getDefaultToolkit(); // Alacenar nuestro sistema natvo de pantallas
-        /* Dimension tamanoPantalla = miPantalla.getScreenSize(); // averiguamos nuestra resolucion de nuestra pantalla.
+        Dimension tamanoPantalla = miPantalla.getScreenSize(); // averiguamos nuestra resolucion de nuestra pantalla.
         int anchoPantalla = tamanoPantalla.width; // Extraemos el ancho de pantalla
         int largoPantalla = tamanoPantalla.height; // Extraemos en largo de mi pantalla
-        setSize(anchoPantalla / 2, largoPantalla / 2); // Tamaño de la pantalla
-        setLocation(anchoPantalla / 4, largoPantalla / 4); // Centrar la pantalla
-        setTitle("Proyecto #1 - Elevator Manager");
         Image icono = miPantalla.getImage("./img/logoUGalileo.png");
         setIconImage(icono);
-        PantallaPresentacion hoja1 = new PantallaPresentacion();
-        add(hoja1);*/
 
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new GridLayout(1,4,10,10));
@@ -43,26 +43,45 @@ public class MarcoPantalla extends JFrame {
         add(controlPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        btnInicio.addActionListener(e -> log("Simulación iniciada..."));
-        btnParar.addActionListener(e -> log("Simulación detenida."));
+        btnInicio.addActionListener(e -> {
+            log("Simulación iniciada...");
+            mostrarVentanaConfiguracion();
+        });
+
+        /*btnParar.addActionListener(e -> log("Simulación detenida."));
         btnReset.addActionListener(e-> log("Elevadores reseteados."));
         btnAgregarSolicitud.addActionListener(e -> {
             String piso = JOptionPane.showInputDialog(this, "Ingrese el piso de destino:");
             logArea.append("Solicitud agregada para el piso: " + piso + "\n");
-        });
+        });*/
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 300);
-        setLocationRelativeTo(null);
+        setSize(anchoPantalla / 2, largoPantalla / 2);
+        setLocation(anchoPantalla / 4, largoPantalla / 4);
         setVisible(true);
-
     }
 
-    private void log(String mensaje) {
+    private void mostrarVentanaConfiguracion() {
+
+        VentanaConfiguracion vconfig = new VentanaConfiguracion(this);
+        vconfig.setVisible(true);
+    }
+
+    public void inicialicializarElevadores(int nElevadores, double tiempoEspera, int cantidadPisos, double tiempoTransporte) {
+        elevadores = new ElevatorStandard[nElevadores];
+        for (int i = 0; i < nElevadores; i++) {
+            elevadores[i] = new ElevatorStandard(tiempoEspera, cantidadPisos, tiempoTransporte);
+            Thread asyncElevador = new Thread(elevadores[i], "Elevador-" + (i + 1));
+            asyncElevador.start();
+            log("Elevador #" + (i + 1) + " iniciado.");
+        }
+        manejador = new ManejoElevadores(elevadores);
+        Thread hiloManejador = new Thread(manejador, "ManejadorElevadores");
+        hiloManejador.start();
+        log("Manejador de elevadores iniciado.");
+    }
+
+    public void log(String mensaje) {
         logArea.append(mensaje + "\n");
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MarcoPantalla());
     }
 }
