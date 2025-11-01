@@ -10,13 +10,33 @@ public class ManejoElevadores implements Runnable {
 
     public ManejoElevadores(Elevator[] elevadores) {
         if (elevadores == null || elevadores.length == 0) {
-            throw new IllegalArgumentException("Debe existir al menos un elevador");
+            throw new IllegalArgumentException("Debe haber mas de un elevador un elevador");
         }
         this.elevadores = elevadores;
     }
 
     public void solicitarElevador(int piso, Direccion direccion) {
         solicitudes.offer(new SolicitudElevador(piso, direccion));
+    }
+
+    public void agregarSolicitudInterna(int idElevador, int piso) {
+        Elevator elevador = buscarElevadorPorId(idElevador);
+        if (elevador == null)
+            return;
+        if (piso < 1 || piso > elevador.getTableroInterno().length)
+            return;
+        elevador.agregarSolicitud(piso);
+    }
+
+    public void resetSistema() {
+        solicitudes.clear();
+        for (Elevator elevador : elevadores) {
+            boolean[] tablero = elevador.getTableroInterno();
+            for (int i = 0; i < tablero.length; i++)
+                tablero[i] = false;
+            elevador.getsolicitudes().clear();
+            elevador.resetElevador();
+        }
     }
 
     public void detener() {
@@ -122,18 +142,25 @@ public class ManejoElevadores implements Runnable {
     }
 
     private boolean hayParadasArribaDesde(Elevator elevador, int desde) {
-        boolean[] t = elevador.getTableroInterno();
-        for (int i = Math.max(0, desde - 1); i < t.length; i++)
-            if (t[i])
+        boolean[] tablero = elevador.getTableroInterno();
+        for (int i = Math.max(0, desde - 1); i < tablero.length; i++)
+            if (tablero[i])
                 return true;
         return false;
     }
 
     private boolean hayParadasAbajoDesde(Elevator elevador, int desde) {
-        boolean[] t = elevador.getTableroInterno();
-        for (int i = Math.min(t.length - 1, desde - 2); i >= 0; i--)
-            if (t[i])
+        boolean[] tablero = elevador.getTableroInterno();
+        for (int i = Math.min(tablero.length - 1, desde - 2); i >= 0; i--)
+            if (tablero[i])
                 return true;
         return false;
+    }
+
+    private Elevator buscarElevadorPorId(int id) {
+        for (Elevator elevador : elevadores)
+            if (elevador.getId() == id)
+                return elevador;
+        return null;
     }
 }
